@@ -15,17 +15,55 @@ function fetchLogChunk(lines) {
   return logChunk;
 }
 
+function reverse(s) {
+  var o = '';
+  for (var i = s.length - 1; i >= 0; i--)
+    o += s[i];
+  return o.trim();
+}
+
+
 var last10Lines = [];
 
 console.log(last10Lines);
 
 if(last10Lines.length <= 0) {
-  fs.readFile(process.argv[2], 'utf8', function(err, data) {  
-    if(err) throw err;
+  // fs.readFile(process.argv[2], 'utf8', function(err, data) {  
+  //   if(err) throw err;
 
-    var lines = data.trim().split('\n');
-    noOfLines = lines.length;
-    last10Lines = lines.splice(-10); 
+  //   var lines = data.trim().split('\n');
+  //   noOfLines = lines.length;
+  //   last10Lines = lines.splice(-10); 
+  // });
+  fs.open(process.argv[2], 'r', function(err, fd) {  
+    stream = fs.createReadStream(null, {fd: fd});
+    //console.log(stream);
+
+    stream.on('data', function(data) {
+      var index = data.length - 1;
+      var counter = 0;
+      var line = '';
+      while(index >= 0) {
+        val = String.fromCharCode(data[index]);
+        line += val;
+        if(val == "\n" || index == 0) {
+          counter++;
+          if(line.trim() !== '')
+            last10Lines.push(line.trim());
+          line = '';
+          if(counter == 10) {
+            break;
+          }
+        }
+        index--;
+      }
+
+      for(var i = 0; i < last10Lines.length; i++) {
+        last10Lines[i] = reverse(last10Lines[i]); 
+      }
+      last10Lines = last10Lines.reverse();
+      console.log(last10Lines);
+    });
   });
 }
 
