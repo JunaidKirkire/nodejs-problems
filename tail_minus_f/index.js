@@ -58,8 +58,6 @@ if(last10Lines.length <= 0) {
 }
 
 io.on('connection', function(socket){
-  var noOfLines = 0, newNoOfLines = 0;
-
   socket.emit('log', fetchLogChunk(last10Lines));
 });
 
