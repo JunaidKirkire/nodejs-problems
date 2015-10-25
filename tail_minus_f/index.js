@@ -25,19 +25,10 @@ function reverse(s) {
 
 var last10Lines = [];
 
-console.log(last10Lines);
-
 if(last10Lines.length <= 0) {
-  // fs.readFile(process.argv[2], 'utf8', function(err, data) {  
-  //   if(err) throw err;
-
-  //   var lines = data.trim().split('\n');
-  //   noOfLines = lines.length;
-  //   last10Lines = lines.splice(-10); 
-  // });
+  
   fs.open(process.argv[2], 'r', function(err, fd) {  
     stream = fs.createReadStream(null, {fd: fd});
-    //console.log(stream);
 
     stream.on('data', function(data) {
       var index = data.length - 1;
@@ -62,7 +53,6 @@ if(last10Lines.length <= 0) {
         last10Lines[i] = reverse(last10Lines[i]); 
       }
       last10Lines = last10Lines.reverse();
-      console.log(last10Lines);
     });
   });
 }
